@@ -10,7 +10,7 @@ namespace GGJ
         {
             if (other.CompareTag("Player"))
             {
-                turret.StopShooting();
+                turret.DisableTurret();
             }
         }
     }

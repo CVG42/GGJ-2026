@@ -10,7 +10,7 @@ namespace GGJ
         {
             if (other.CompareTag("Player"))
             {
-                _turret.StartShooting();
+                _turret.EnableTurret();
             }
         }
     }
