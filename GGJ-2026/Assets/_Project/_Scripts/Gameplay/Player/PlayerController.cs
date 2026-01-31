@@ -18,6 +18,7 @@ namespace GGJ
         private float _coyoteCounter;
         private float _jumpBufferCounter;
         private bool _isGrounded;
+        private bool _isPaused;
 
         private void Awake()
         {
@@ -27,6 +28,8 @@ namespace GGJ
 
         private void Start()
         {
+            GameManager.Source.OnGameStateChanged += HandleGameState;
+
             InputManager.Source.OnMove += HandleMove;
             InputManager.Source.OnJumpPressed += HandleJumpPressed;
             InputManager.Source.OnJumpReleased += HandleJumpReleased;
@@ -34,6 +37,8 @@ namespace GGJ
 
         private void OnDestroy()
         {
+            GameManager.Source.OnGameStateChanged -= HandleGameState;
+
             InputManager.Source.OnMove -= HandleMove;
             InputManager.Source.OnJumpPressed -= HandleJumpPressed;
             InputManager.Source.OnJumpReleased -= HandleJumpReleased;
@@ -41,6 +46,8 @@ namespace GGJ
 
         private void Update()
         {
+            if (_isPaused) return;
+
             GroundCheck();
 
             if (_isGrounded)
@@ -66,8 +73,20 @@ namespace GGJ
 
         private void FixedUpdate()
         {
+            if (_isPaused) return;
+
             MovePlayer();
             ApplyGravity();
+        }
+
+        private void HandleGameState(GameState state)
+        {
+            _isPaused = state == GameState.OnPause;
+
+            if (_isPaused)
+            {
+                _rigidbody.velocity = Vector3.zero;
+            }
         }
 
         private void HandleMove(float input) => _moveInput = input;

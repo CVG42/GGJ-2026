@@ -22,4 +22,14 @@ namespace GGJ
 
         void UnlockPower2();
     }
+
+    public interface IGameSource
+    {
+        event Action<GameState> OnGameStateChanged;
+        GameState CurrentState { get; }
+
+        void PauseGame();
+        void ResumeGame();
+        void GameOver();
+    }
 }

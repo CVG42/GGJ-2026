@@ -22,6 +22,8 @@ namespace GGJ
 
         private void Start()
         {
+            GameManager.Source.OnGameStateChanged += HandleGameState;
+
             PlatformsManager.Source.OnPower1Used += ToggleHorizontal;
             PlatformsManager.Source.OnPower2Used += ToggleVertical;
 
@@ -33,7 +35,23 @@ namespace GGJ
             PlatformsManager.Source.OnPower1Used -= ToggleHorizontal;
             PlatformsManager.Source.OnPower2Used -= ToggleVertical;
 
+            GameManager.Source.OnGameStateChanged -= HandleGameState;
+
             _moveTween?.Kill();
+        }
+
+        private void HandleGameState(GameState state)
+        {
+            if (_moveTween == null) return;
+
+            if (state == GameState.OnPause)
+            {
+                _moveTween.Pause();
+            }
+            else if (state == GameState.OnPlay)
+            {
+                _moveTween.Play();
+            }
         }
 
         private void InitializeDirections()
@@ -107,6 +125,7 @@ namespace GGJ
         private void StartMoveHorizontal()
         {
             _activeAxis = ActiveAxis.Horizontal;
+            PlatformControllerEvents.OnActivePowerChanged?.Invoke(PlatformPowerState.Power1);
             _moveTween?.Kill();
 
             float targetX = (_horizontalDirection > 0) ? _limits.maxX : _limits.minX;
@@ -122,6 +141,7 @@ namespace GGJ
         private void StartMoveVertical()
         {
             _activeAxis = ActiveAxis.Vertical;
+            PlatformControllerEvents.OnActivePowerChanged?.Invoke(PlatformPowerState.Power2);
             _moveTween?.Kill();
 
             float targetY = (_verticalDirection > 0) ? _limits.maxY : _limits.minY;
@@ -155,5 +175,7 @@ namespace GGJ
     {
         public static Action<int> OnHorizontalDirectionChanged;
         public static Action<int> OnVerticalDirectionChanged;
+
+        public static Action<PlatformPowerState> OnActivePowerChanged;
     }
 }

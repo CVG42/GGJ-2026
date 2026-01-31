@@ -10,6 +10,7 @@ namespace GGJ
 
         private BulletPool pool;
         private float timer;
+        private bool _isPaused;
 
         public void Init(BulletPool bulletPool)
         {
@@ -19,11 +20,14 @@ namespace GGJ
 
         private void OnEnable()
         {
+            GameManager.Source.OnGameStateChanged += HandleGameState;
             timer = 0f;
         }
 
         private void Update()
         {
+            if (_isPaused) return;
+
             transform.position += transform.right * speed * Time.deltaTime;
 
             timer += Time.deltaTime;
@@ -45,6 +49,16 @@ namespace GGJ
         private void ReturnToPool()
         {
             pool.ReturnBullet(gameObject);
+        }
+
+        private void HandleGameState(GameState state)
+        {
+            _isPaused = state == GameState.OnPause;
+        }
+
+        private void OnDisable()
+        {
+            GameManager.Source.OnGameStateChanged -= HandleGameState;
         }
     }
 }

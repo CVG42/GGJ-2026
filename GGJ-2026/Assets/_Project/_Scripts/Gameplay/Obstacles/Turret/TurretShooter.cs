@@ -18,37 +18,54 @@ namespace GGJ
         [SerializeField] private float startDelay = 0f;
 
         private CancellationTokenSource shootingCTS;
-        private bool isActive;
+        private bool isEnabledByGameplay;
+        private bool isPaused;
 
         private void Start()
         {
-            if (startDelay > 0)
+            GameManager.Source.OnGameStateChanged += HandleGameState;
+        }
+
+        public void EnableTurret()
+        {
+            isEnabledByGameplay = true;
+            TryStartShooting();
+        }
+
+        public void DisableTurret()
+        {
+            isEnabledByGameplay = false;
+            StopShooting();
+        }
+
+        private void HandleGameState(GameState state)
+        {
+            isPaused = state == GameState.OnPause;
+
+            if (isPaused)
             {
-                StartShootingWithDelay().Forget();
+                StopShooting();
+            }
+            else
+            {
+                TryStartShooting();
             }
         }
 
-        private async UniTaskVoid StartShootingWithDelay()
+        private void TryStartShooting()
         {
-            await UniTask.Delay(TimeSpan.FromSeconds(startDelay), cancellationToken: this.GetCancellationTokenOnDestroy());
+            if (!isEnabledByGameplay) return;
+            if (isPaused) return;
+            if (shootingCTS != null) return;
 
-            StartShooting();
-        }
-
-        public void StartShooting()
-        {
-            if (isActive) return;
-
-            isActive = true;
             shootingCTS = new CancellationTokenSource();
             ShootLoopAsync(shootingCTS.Token).Forget();
         }
 
-        public void StopShooting()
+        private void StopShooting()
         {
-            if (!isActive) return;
+            if (shootingCTS == null) return;
 
-            isActive = false;
             shootingCTS.Cancel();
             shootingCTS.Dispose();
             shootingCTS = null;
@@ -58,12 +75,16 @@ namespace GGJ
         {
             try
             {
+                if (startDelay > 0)
+                {
+                    await UniTask.Delay(TimeSpan.FromSeconds(startDelay), cancellationToken: token);
+                }
+
                 while (!token.IsCancellationRequested)
                 {
                     for (int i = 0; i < bulletsPerBurst; i++)
                     {
                         Shoot();
-
                         await UniTask.Delay(TimeSpan.FromSeconds(timeBetweenShots), cancellationToken: token);
                     }
 
@@ -84,8 +105,8 @@ namespace GGJ
 
         private void OnDestroy()
         {
-            shootingCTS?.Cancel();
-            shootingCTS?.Dispose();
+            GameManager.Source.OnGameStateChanged -= HandleGameState;
+            StopShooting();
         }
     }
 }
