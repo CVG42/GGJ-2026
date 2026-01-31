@@ -55,10 +55,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Brillo: 2.6
+    - _Brillo: 16.03
     - _HDR: 1
     - _QueueControl: 0
     - _QueueOffset: 0
     m_Colors:
-    - _Color: {r: 3.4645743, g: 2.0608242, b: 0.46412224, a: 0}
+    - _Color: {r: 2.0509195, g: 1.4965262, b: 0.862934, a: 0}
   m_BuildTextureStacks: []
