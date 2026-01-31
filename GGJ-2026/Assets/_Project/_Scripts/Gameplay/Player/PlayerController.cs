@@ -123,22 +123,6 @@ namespace GGJ
             _isGrounded = Physics.CheckSphere(_groundCheck.position, _groundCheckRadius, _groundLayer);
         }
 
-        private void OnCollisionEnter(Collision collision)
-        {
-            if (collision.gameObject.CompareTag("MovingPlatform"))
-            {
-                transform.SetParent(collision.transform);
-            }
-        }
-
-        private void OnCollisionExit(Collision collision)
-        {
-            if (collision.gameObject.CompareTag("MovingPlatform"))
-            {
-                transform.SetParent(null);
-            }
-        }
-
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {

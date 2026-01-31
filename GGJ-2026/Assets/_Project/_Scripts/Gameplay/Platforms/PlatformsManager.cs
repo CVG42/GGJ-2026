@@ -6,7 +6,7 @@ namespace GGJ
     public class PlatformsManager : Singleton<IPlatformSource>, IPlatformSource
     {
         public bool Power1Unlocked { get; private set; } = true;
-        public bool Power2Unlocked { get; private set; } = false;
+        public bool Power2Unlocked { get; private set; } = true;
 
         public event Action OnPower1Used;
         public event Action OnPower2Used;
