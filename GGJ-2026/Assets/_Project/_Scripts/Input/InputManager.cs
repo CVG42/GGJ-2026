@@ -9,10 +9,14 @@ namespace GGJ
         public event Action OnJumpPressed;
         public event Action OnJumpReleased;
 
+        public event Action OnPlatformPower1;
+        public event Action OnPlatformPower2;
+
         private void Update()
         {
             HandleMovement();
             HandleJump();
+            HandlePlatforms();
         }
 
         private void HandleMovement()
@@ -31,6 +35,19 @@ namespace GGJ
             if (Input.GetButtonUp("Jump"))
             {
                 OnJumpReleased?.Invoke();
+            }
+        }
+
+        private void HandlePlatforms()
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                OnPlatformPower1?.Invoke();
+            }
+
+            if (Input.GetKeyDown(KeyCode.Alpha2))
+            { 
+                OnPlatformPower2?.Invoke(); 
             }
         }
     }
