@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6aea113900cd28449a5e6f278ecdb0a, type: 3}
   m_Name: P1
   m_EditorClassIdentifier: 
-  minX: 11.39
+  minX: 11.3958
   maxX: 20
   minY: -1
   maxY: 5

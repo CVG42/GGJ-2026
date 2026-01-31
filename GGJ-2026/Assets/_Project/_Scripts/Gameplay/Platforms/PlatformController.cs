@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 
 namespace GGJ
@@ -10,11 +11,13 @@ namespace GGJ
         private int _verticalDirection = 1;
 
         private bool _playerOnPlatform;
-        private bool _movingHorizontal;
-        private bool _movingVertical;
+        private bool _hasMovedHorizontal = false;
+        private bool _hasMovedVertical = false;
 
-        private enum ActiveAxis { None, Horizontal, Vertical };
+        private enum ActiveAxis { None, Horizontal, Vertical }
         private ActiveAxis _activeAxis = ActiveAxis.None;
+
+        private Tween _moveTween;
 
         private void Start()
         {
@@ -28,14 +31,8 @@ namespace GGJ
         {
             PlatformsManager.Source.OnPower1Used -= ToggleHorizontal;
             PlatformsManager.Source.OnPower2Used -= ToggleVertical;
-        }
 
-        private void Update()
-        {
-            if (!_playerOnPlatform) return;
-
-            HandleHorizontalMovement();
-            HandleVerticalMovement();
+            _moveTween?.Kill();
         }
 
         private void InitializeDirections()
@@ -45,20 +42,20 @@ namespace GGJ
 
             if (Mathf.Approximately(x, _limits.minX))
             {
-                _horizontalDirection = -1;
+                _horizontalDirection = 1;
             }
             else if (Mathf.Approximately(x, _limits.maxX))
             {
-                _horizontalDirection = 1;
+                _horizontalDirection = -1;
             }
 
             if (Mathf.Approximately(y, _limits.minY))
             {
-                _verticalDirection = -1;
+                _verticalDirection = 1;
             }
             else if (Mathf.Approximately(y, _limits.maxY))
             {
-                _verticalDirection = 1;
+                _verticalDirection = -1;
             }
         }
 
@@ -66,64 +63,70 @@ namespace GGJ
         {
             if (!_playerOnPlatform) return;
 
-            _horizontalDirection *= -1;
-            _activeAxis = ActiveAxis.Horizontal;
-            _movingHorizontal = true;
-            _movingVertical = false;
+            if (_activeAxis == ActiveAxis.Horizontal)
+            {
+                _horizontalDirection *= -1;
+            }
+            else if (!_hasMovedHorizontal)
+            {
+                _hasMovedHorizontal = true;
+            }
+            else
+            {
+                _horizontalDirection *= -1;
+            }
+
+            StartMoveHorizontal();
         }
 
         private void ToggleVertical()
         {
             if (!_playerOnPlatform) return;
 
-            _verticalDirection *= -1;
+            if (_activeAxis == ActiveAxis.Vertical)
+            {
+                _verticalDirection *= -1;
+            }
+            else if (!_hasMovedVertical)
+            {
+                _hasMovedVertical = true;
+            }
+            else
+            {
+                _verticalDirection *= -1;
+            }
+
+            StartMoveVertical();
+        }
+
+        private void StartMoveHorizontal()
+        {
+            _activeAxis = ActiveAxis.Horizontal;
+            _moveTween?.Kill();
+
+            float targetX = (_horizontalDirection > 0) ? _limits.maxX : _limits.minX;
+            float distance = Mathf.Abs(transform.position.x - targetX);
+            float duration = distance / _limits.horizontalSpeed;
+
+            _moveTween = transform.DOMoveX(targetX, duration)
+                .SetEase(Ease.InOutSine)
+                .SetUpdate(UpdateType.Fixed)
+                .OnComplete(() => _activeAxis = ActiveAxis.None);
+        }
+
+        private void StartMoveVertical()
+        {
             _activeAxis = ActiveAxis.Vertical;
-            _movingVertical = true;
-            _movingHorizontal = false;
-        }
+            _moveTween?.Kill();
 
-        private void HandleHorizontalMovement()
-        {
-            if (!_movingHorizontal || _activeAxis != ActiveAxis.Horizontal) return;
+            float targetY = (_verticalDirection > 0) ? _limits.maxY : _limits.minY;
+            float distance = Mathf.Abs(transform.position.y - targetY);
+            float duration = distance / _limits.verticalSpeed;
 
-            float nextX = transform.position.x + _horizontalDirection * _limits.horizontalSpeed * Time.deltaTime;
-
-            if (nextX >= _limits.maxX)
-            {
-                nextX = _limits.maxX;
-                _movingHorizontal = false;
-                _activeAxis = ActiveAxis.None;
-            }
-            else if (nextX <= _limits.minX)
-            {
-                nextX = _limits.minX;
-                _movingHorizontal = false;
-                _activeAxis = ActiveAxis.None;
-            }
-
-            transform.position = new Vector3(nextX, transform.position.y, transform.position.z);
-        }
-
-        private void HandleVerticalMovement()
-        {
-            if (!_movingVertical || _activeAxis != ActiveAxis.Vertical) return;
-
-            float nextY = transform.position.y + _verticalDirection * _limits.verticalSpeed * Time.deltaTime;
-
-            if (nextY >= _limits.maxY)
-            {
-                nextY = _limits.maxY;
-                _movingVertical = false;
-                _activeAxis = ActiveAxis.None;
-            }
-            else if (nextY <= _limits.minY)
-            {
-                nextY = _limits.minY;
-                _movingVertical = false;
-                _activeAxis = ActiveAxis.None;
-            }
-
-            transform.position = new Vector3(transform.position.x, nextY, transform.position.z);
+            _moveTween = transform.DOMoveY(targetY, duration)
+                .SetEase(Ease.InOutSine)
+                .SetUpdate(UpdateType.Fixed)
+                .OnComplete(() => _activeAxis = ActiveAxis.None);
         }
 
         private void OnCollisionEnter(Collision collision)
@@ -134,7 +137,7 @@ namespace GGJ
             }
         }
 
-        private void OnCollisionExit(Collision collision) 
+        private void OnCollisionExit(Collision collision)
         {
             if (collision.gameObject.CompareTag("Player"))
             {
