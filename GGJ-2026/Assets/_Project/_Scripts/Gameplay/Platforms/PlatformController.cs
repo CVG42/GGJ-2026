@@ -1,3 +1,4 @@
+using System;
 using DG.Tweening;
 using UnityEngine;
 
@@ -66,6 +67,7 @@ namespace GGJ
             if (_activeAxis == ActiveAxis.Horizontal)
             {
                 _horizontalDirection *= -1;
+                PlatformControllerEvents.OnHorizontalDirectionChanged?.Invoke(_horizontalDirection);
             }
             else if (!_hasMovedHorizontal)
             {
@@ -74,6 +76,7 @@ namespace GGJ
             else
             {
                 _horizontalDirection *= -1;
+                PlatformControllerEvents.OnHorizontalDirectionChanged?.Invoke(_horizontalDirection);
             }
 
             StartMoveHorizontal();
@@ -86,6 +89,7 @@ namespace GGJ
             if (_activeAxis == ActiveAxis.Vertical)
             {
                 _verticalDirection *= -1;
+                PlatformControllerEvents.OnVerticalDirectionChanged?.Invoke(_verticalDirection);
             }
             else if (!_hasMovedVertical)
             {
@@ -94,6 +98,7 @@ namespace GGJ
             else
             {
                 _verticalDirection *= -1;
+                PlatformControllerEvents.OnVerticalDirectionChanged?.Invoke(_verticalDirection);
             }
 
             StartMoveVertical();
@@ -144,5 +149,11 @@ namespace GGJ
                 _playerOnPlatform = false;
             }
         }
+    }
+
+    public static class PlatformControllerEvents
+    {
+        public static Action<int> OnHorizontalDirectionChanged;
+        public static Action<int> OnVerticalDirectionChanged;
     }
 }
