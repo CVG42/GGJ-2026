@@ -18,9 +18,13 @@ namespace GGJ
             timer = 0f;
         }
 
+        private void Start()
+        {
+            GameManager.Source.OnGameStateChanged += HandleGameState; 
+        }
+
         private void OnEnable()
         {
-            GameManager.Source.OnGameStateChanged += HandleGameState;
             timer = 0f;
         }
 
@@ -56,7 +60,7 @@ namespace GGJ
             _isPaused = state == GameState.OnPause;
         }
 
-        private void OnDisable()
+        private void OnDestroy()
         {
             GameManager.Source.OnGameStateChanged -= HandleGameState;
         }
