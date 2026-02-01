@@ -12,6 +12,9 @@ public class MenuSystem : MonoBehaviour
     public GameObject panelCreditos; 
 
     [Header("Configuración de Audio")]
+    [Header("Configuración de Sonido")]
+    public AudioSource musicaFondo;
+    public AudioSource efectosSonido;
     public Toggle toggleMusica;
     public Toggle toggleSonidos;
 
@@ -58,15 +61,24 @@ public class MenuSystem : MonoBehaviour
 
     // Menu de audio
 
-    public void CambiarMusica(bool encendido)
+    // Funcion para el toggle de musica
+    public void ControlarMusica(bool estado)
     {
-        if (encendido) Debug.Log("Música ON");
-        else Debug.Log("Música OFF");
+        if (estado)
+        {
+            musicaFondo.mute = !estado;
+            Debug.Log("Música activa: " + estado);
+        }
+        
     }
 
-    public void CambiarSonidos(bool encendido)
+    // Funcion para el toggle de sonidos
+    public void ControlarSonido(bool estado)
     {
-        if (encendido) Debug.Log("Sonidos ON");
-        else Debug.Log("Sonidos OFF");
+        if (estado)
+        {
+            efectosSonido.mute = !estado;
+            Debug.Log("Sonidos activos: " + estado);
+        }
     }
 }

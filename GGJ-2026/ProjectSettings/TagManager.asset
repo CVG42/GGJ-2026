@@ -41,3 +41,12 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Buttons
+    uniqueID: 699982147
+    locked: 0
+  - name: Background
+    uniqueID: 1364946071
+    locked: 0
+  - name: Canvas
+    uniqueID: 1782140555
+    locked: 0
