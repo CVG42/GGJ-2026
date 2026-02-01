@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -22,6 +23,17 @@ namespace GGJ
         [SerializeField] private Button _settingsBackButton;
         [SerializeField] private Button _creditsBackButton;
 
+        [Header("Audio settings")]
+        [SerializeField] private Button _audioOn;
+        [SerializeField] private Button _audioOff;
+        [SerializeField] private AudioMixer _audioMixer;
+        [SerializeField] private string _volumeParameter = "volume";
+
+        private const float ON_VOLUME = 0f;
+        private const float OFF_VOLUME = -80f;
+
+        private bool _isAudioOn = true;
+
         private void Start()
         {
             _startButton.onClick.AddListener(StartGame);
@@ -31,9 +43,14 @@ namespace GGJ
             _settingsBackButton.onClick.AddListener(CloseSettings);
             _creditsBackButton.onClick.AddListener(CloseCredits);
 
+            _audioOn.onClick.AddListener(TurnAudioOff);
+            _audioOff.onClick.AddListener(TurnAudioOn);
+
             _configScreen.SetActive(false);
             _creditsScreen.SetActive(false);
-            _mainMenuScreen.SetActive(true);    
+            _mainMenuScreen.SetActive(true);
+            
+            ApplyAudioState();
         }
 
         private void StartGame()
@@ -68,6 +85,27 @@ namespace GGJ
         {
             _configScreen.SetActive(false);
             _mainMenuScreen.SetActive(true);
+        }
+
+        public void TurnAudioOff()
+        {
+            _isAudioOn = false;
+            ApplyAudioState();
+        }
+
+        public void TurnAudioOn()
+        {
+            _isAudioOn = true;
+            ApplyAudioState();
+        }
+
+        private void ApplyAudioState()
+        {
+            float targetVolume = _isAudioOn ? ON_VOLUME : OFF_VOLUME;
+            _audioMixer.SetFloat(_volumeParameter, targetVolume);
+
+            _audioOn.gameObject.SetActive(_isAudioOn);
+            _audioOff.gameObject.SetActive(!_isAudioOn);
         }
     }
 }
