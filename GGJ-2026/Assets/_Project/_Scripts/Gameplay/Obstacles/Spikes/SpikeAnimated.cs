@@ -13,6 +13,7 @@ namespace GGJ
 
         [Header("Movement")]
         [SerializeField] private float _extendOffsetY = 0.5f;
+        [SerializeField] private float _extendOffsetX = 0f;
         [SerializeField] private float _moveDuration = 0.15f;
 
         [Header("Damage")]
@@ -24,12 +25,14 @@ namespace GGJ
         [SerializeField] private float _timeRetracted = 1.5f;
 
         private float _retractedY;
+        private float _retractedX;
         private Tween _moveTween;
         private bool _canDamage = true;
 
         private void Awake()
         {
             _retractedY = transform.position.y;
+            _retractedX = transform.position.x;
         }
 
         private void Start()
@@ -44,13 +47,27 @@ namespace GGJ
                 await UniTask.Delay(TimeSpan.FromSeconds(_timeRetracted));
 
                 MoveUp();
+                MoveRight();
                 _animator.SetTrigger("Extend");
 
                 await UniTask.Delay(TimeSpan.FromSeconds(_timeExtended));
 
                 _animator.SetTrigger("Retract");
                 MoveDown();
+                MoveLeft();
             }
+        }
+
+        private void MoveRight()
+        {
+            _moveTween?.Kill();
+            _moveTween = transform.DOMoveX(_retractedX + _extendOffsetX, _moveDuration);
+        }
+
+        private void MoveLeft()
+        {
+            _moveTween?.Kill();
+            _moveTween = transform.DOMoveX(_retractedX, _moveDuration);
         }
 
         private void MoveUp()
