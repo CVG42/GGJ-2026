@@ -10,6 +10,10 @@ namespace GGJ
         [SerializeField] private float _groundCheckRadius = 0.2f;
         [SerializeField] private LayerMask _groundLayer;
 
+        public float CurrentHorizontalSpeed => _rigidbody.velocity.x;
+        public float MoveInput => _moveInput;
+        public bool IsGrounded => _isGrounded;
+
         private Rigidbody _rigidbody;
         private float _moveInput;
         private bool _jumpPressed;
