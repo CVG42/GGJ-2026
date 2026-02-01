@@ -30,28 +30,14 @@ namespace GGJ
         {
             InputManager.Source.OnPlatformPower1 += OnHorizontalPower;
             InputManager.Source.OnPlatformPower2 += OnVerticalPower;
+            GameManager.Source.OnGameStateChanged += HandleGameState;
         }
 
         private void OnDestroy()
         {
-            if (InputManager.Source != null)
-            {
-                InputManager.Source.OnPlatformPower1 -= OnHorizontalPower;
-                InputManager.Source.OnPlatformPower2 -= OnVerticalPower;
-            }
-        }
-
-        private void OnEnable()
-        {
-            GameManager.Source.OnGameStateChanged += HandleGameState;
-        }
-
-        private void OnDisable()
-        {
-            if (GameManager.Source != null)
-            {
-                GameManager.Source.OnGameStateChanged -= HandleGameState;
-            }
+            InputManager.Source.OnPlatformPower1 -= OnHorizontalPower;
+            InputManager.Source.OnPlatformPower2 -= OnVerticalPower;
+            GameManager.Source.OnGameStateChanged -= HandleGameState;
         }
 
         private void OnHorizontalPower()
