@@ -15,6 +15,8 @@ namespace GGJ
         private bool _hasMovedHorizontal = false;
         private bool _hasMovedVertical = false;
 
+        private Vector3 _initialPosition;
+
         private enum ActiveAxis { None, Horizontal, Vertical }
         private ActiveAxis _activeAxis = ActiveAxis.None;
 
@@ -28,6 +30,8 @@ namespace GGJ
             PlatformsManager.Source.OnPower2Used += ToggleVertical;
 
             InitializeDirections();
+
+            _initialPosition = transform.position;
         }
 
         private void OnDestroy()
@@ -167,7 +171,34 @@ namespace GGJ
             if (collision.gameObject.CompareTag("Player"))
             {
                 _playerOnPlatform = false;
+                ReturnToStartPosition();
             }
+        }
+
+        private void ReturnToStartPosition()
+        {
+            if (_moveTween != null && _moveTween.IsActive())
+                _moveTween.Kill();
+
+            _activeAxis = ActiveAxis.None;
+
+            float distance = Vector3.Distance(transform.position, _initialPosition);
+            float speed = (_activeAxis == ActiveAxis.Horizontal) ? _limits.horizontalSpeed : _limits.verticalSpeed;
+
+            if (distance < 0.01f)
+                return;
+
+            float duration = distance / Mathf.Max(_limits.horizontalSpeed, _limits.verticalSpeed);
+
+            _moveTween = transform.DOMove(_initialPosition, duration)
+                .SetEase(Ease.InOutSine)
+                .SetUpdate(UpdateType.Fixed)
+                .OnComplete(() =>
+                {
+                    _hasMovedHorizontal = false;
+                    _hasMovedVertical = false;
+                    InitializeDirections();
+                });
         }
     }
 
