@@ -9,14 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 79bafdf5fddf0034c944a1b65e5190e9, type: 3}
-  m_Name: Default
+  m_Script: {fileID: 11500000, guid: f6aea113900cd28449a5e6f278ecdb0a, type: 3}
+  m_Name: P3_T
   m_EditorClassIdentifier: 
-  _moveSpeed: 5
-  _acceleration: 60
-  _deceleration: 80
-  _jumpForce: 0
-  _coyoteTime: 0.15
-  _jumpBufferTime: 0.15
-  _fallMultiplier: 2.5
-  _lowJumpMultiplier: 2
+  minX: 21.95
+  maxX: 49.814
+  minY: -5.33
+  maxY: 5.42
+  horizontalSpeed: 3
+  verticalSpeed: 3
