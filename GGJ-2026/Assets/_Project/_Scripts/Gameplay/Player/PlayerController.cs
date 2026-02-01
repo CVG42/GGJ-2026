@@ -23,6 +23,7 @@ namespace GGJ
         private float _jumpBufferCounter;
         private bool _isGrounded;
         private bool _isPaused;
+        private bool _isGameOver;
 
         private void Awake()
         {
@@ -86,8 +87,14 @@ namespace GGJ
         private void HandleGameState(GameState state)
         {
             _isPaused = state == GameState.OnPause;
+            _isGameOver = state == GameState.OnGameOver;
 
             if (_isPaused)
+            {
+                _rigidbody.velocity = Vector3.zero;
+            }
+
+            if (_isGameOver)
             {
                 _rigidbody.velocity = Vector3.zero;
             }

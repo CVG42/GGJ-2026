@@ -3,6 +3,7 @@ using System.Threading;
 using System;
 using UnityEngine;
 using DG.Tweening;
+using Unity.VisualScripting.Antlr3.Runtime;
 
 namespace GGJ
 {
@@ -37,24 +38,34 @@ namespace GGJ
 
         private void Start()
         {
-            RunCycle().Forget();
+            RunCycle(this.GetCancellationTokenOnDestroy()).Forget();
         }
 
-        private async UniTaskVoid RunCycle()
+        private async UniTaskVoid RunCycle(CancellationToken token)
         {
-            while (true)
+            try
             {
-                await UniTask.Delay(TimeSpan.FromSeconds(_timeRetracted));
+                while (!token.IsCancellationRequested)
+                {
+                    await UniTask.Delay(TimeSpan.FromSeconds(_timeRetracted), cancellationToken: token);
 
-                MoveUp();
-                MoveRight();
-                _animator.SetTrigger("Extend");
+                    if (this == null) return;
 
-                await UniTask.Delay(TimeSpan.FromSeconds(_timeExtended));
+                    MoveUp();
+                    MoveRight();
+                    _animator.SetTrigger("Extend");
 
-                _animator.SetTrigger("Retract");
-                MoveDown();
-                MoveLeft();
+                    await UniTask.Delay(TimeSpan.FromSeconds(_timeExtended), cancellationToken: token);
+
+                    if (this == null) return;
+
+                    _animator.SetTrigger("Retract");
+                    MoveDown();
+                    MoveLeft();
+                }
+            }
+            catch (OperationCanceledException)
+            {
             }
         }
 
