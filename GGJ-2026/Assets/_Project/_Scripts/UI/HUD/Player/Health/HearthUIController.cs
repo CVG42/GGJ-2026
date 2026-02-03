@@ -99,5 +99,14 @@ namespace GGJ
         {
             return _currentHeartIndex < 0;
         }
+
+        public void ResetHeartsVisual()
+        {
+            _currentHeartIndex = _hearts.Length - 1;
+            _currentHeartFill = 1f;
+
+            foreach (var heart in _hearts)
+                heart.fillAmount = 1f;
+        }
     }
 }

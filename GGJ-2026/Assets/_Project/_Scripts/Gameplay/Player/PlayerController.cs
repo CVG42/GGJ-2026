@@ -10,6 +10,10 @@ namespace GGJ
         [SerializeField] private float _groundCheckRadius = 0.2f;
         [SerializeField] private LayerMask _groundLayer;
 
+        public float CurrentHorizontalSpeed => _rigidbody.velocity.x;
+        public float MoveInput => _moveInput;
+        public bool IsGrounded => _isGrounded;
+
         private Rigidbody _rigidbody;
         private float _moveInput;
         private bool _jumpPressed;
@@ -19,6 +23,7 @@ namespace GGJ
         private float _jumpBufferCounter;
         private bool _isGrounded;
         private bool _isPaused;
+        private bool _isGameOver;
 
         private void Awake()
         {
@@ -82,8 +87,14 @@ namespace GGJ
         private void HandleGameState(GameState state)
         {
             _isPaused = state == GameState.OnPause;
+            _isGameOver = state == GameState.OnGameOver;
 
             if (_isPaused)
+            {
+                _rigidbody.velocity = Vector3.zero;
+            }
+
+            if (_isGameOver)
             {
                 _rigidbody.velocity = Vector3.zero;
             }

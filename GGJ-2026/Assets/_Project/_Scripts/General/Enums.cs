@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace GGJ
@@ -19,5 +20,10 @@ namespace GGJ
     {
         Day,
         Night
+    }
+
+    public static class VisualStateEvents
+    {
+        public static Action<GameVisualState> OnVisualStateChanged;
     }
 }

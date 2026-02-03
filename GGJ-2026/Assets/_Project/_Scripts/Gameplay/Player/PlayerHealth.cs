@@ -29,9 +29,13 @@ namespace GGJ
             }
         }
 
+        public void RestoreFullHealth()
+        {
+            _currentHealth = _maxHealth;
+        }
+
         private void Die()
         {
-            Debug.Log("Player Dead");
             PlayerHealthEvents.OnPlayerDied?.Invoke();
         }
     }

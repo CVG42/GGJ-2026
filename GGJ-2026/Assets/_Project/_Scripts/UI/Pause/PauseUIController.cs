@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace GGJ
@@ -11,6 +12,12 @@ namespace GGJ
         [SerializeField] private Image _panel;
         [SerializeField] private Image _button1;
         [SerializeField] private Image _button2;
+
+        [Header("Buttons")]
+        [SerializeField] private Button _resumeButton;
+        [SerializeField] private Button _exitButton;
+
+        [SerializeField] private string _mainMenuSceneName = "MainMenu";
 
         [Header("Horizontal")]
         [SerializeField] private Color _horizontalBgColor;
@@ -31,6 +38,9 @@ namespace GGJ
             InputManager.Source.OnPlatformPower1 += OnHorizontalPower;
             InputManager.Source.OnPlatformPower2 += OnVerticalPower;
             GameManager.Source.OnGameStateChanged += HandleGameState;
+
+            _resumeButton.onClick.AddListener(OnResumeClicked);
+            _exitButton.onClick.AddListener(OnExitClicked);
         }
 
         private void OnDestroy()
@@ -38,6 +48,9 @@ namespace GGJ
             InputManager.Source.OnPlatformPower1 -= OnHorizontalPower;
             InputManager.Source.OnPlatformPower2 -= OnVerticalPower;
             GameManager.Source.OnGameStateChanged -= HandleGameState;
+
+            _resumeButton.onClick.RemoveListener(OnResumeClicked);
+            _exitButton.onClick.RemoveListener(OnExitClicked);
         }
 
         private void OnHorizontalPower()
@@ -100,6 +113,17 @@ namespace GGJ
             _panel.sprite = _horizontalPanel;
             _button1.sprite = _horizontalContinueButton;
             _button2.sprite = _horizontalExitButton;
+        }
+
+        private void OnResumeClicked()
+        {
+            GameManager.Source.ResumeGame();
+        }
+
+        private void OnExitClicked()
+        {
+            GameManager.Source.ResumeGame();
+            SceneManager.LoadScene(_mainMenuSceneName);
         }
     }
 }

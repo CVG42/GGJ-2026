@@ -6,6 +6,8 @@ TagManager:
   tags:
   - MovingPlatform
   - Bullet
+  - Reset
+  - EndLevel
   layers:
   - Default
   - TransparentFX
@@ -42,4 +44,10 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Back
+    uniqueID: 3405213467
+    locked: 0
+  - name: Player
+    uniqueID: 2266840431
     locked: 0

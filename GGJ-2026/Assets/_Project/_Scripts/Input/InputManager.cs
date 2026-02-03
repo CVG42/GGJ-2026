@@ -43,11 +43,13 @@ namespace GGJ
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {
                 OnPlatformPower1?.Invoke();
+                VisualStateEvents.OnVisualStateChanged?.Invoke(GameVisualState.Day);
             }
 
             if (Input.GetKeyDown(KeyCode.Alpha2))
             { 
-                OnPlatformPower2?.Invoke(); 
+                OnPlatformPower2?.Invoke();
+                VisualStateEvents.OnVisualStateChanged?.Invoke(GameVisualState.Night);
             }
         }
     }
