@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 namespace GGJ
 {
@@ -31,5 +32,16 @@ namespace GGJ
         void PauseGame();
         void ResumeGame();
         void GameOver();
+    }
+
+    public interface IVisualsSource
+    {
+        bool IsDay {  get; }
+        bool IsTransitioning { get; }
+
+        void RegisterSpriteRenderer(SpriteRenderer renderer, Sprite daySprite, Sprite nightSprite);
+        void UnregisterSpriteRenderer(SpriteRenderer renderer);
+        void PauseCycle();
+        void ResumeCycle();
     }
 }
